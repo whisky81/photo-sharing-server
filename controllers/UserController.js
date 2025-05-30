@@ -69,33 +69,32 @@ async function login(req, res) {
   try {
     const { login_name, password } = req.body;
     const user = await User.find({
-      login_name, password  
+      login_name,
+      password,
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Login name is incorrect" });
+      return res.status(400).json({ message: "Login name is incorrect" });
     }
 
     const payload = {
       _id: user[0]._id.toString(),
       first_name: user[0].first_name,
-       login_name: user[0].login_name 
+      login_name: user[0].login_name,
     };
 
     const token = await jwt.generateJwtToken(payload);
     res.cookie("accessToken", token, {
       httpOnly: true,
-      secure: false, // true
+      secure: true,
       maxAge: 30 * 60 * 1000,
-      sameSite: "Lax",
+      sameSite: "None",
       path: "/",
     });
 
     return res.status(200).json({
       _id: user[0]._id.toString(),
-      first_name: user[0].first_name 
+      first_name: user[0].first_name,
     });
   } catch (error) {
     return res.status(500).json({
@@ -113,5 +112,5 @@ module.exports = {
   getUserById,
   getAllUsers,
   login,
-  logout
+  logout,
 };
