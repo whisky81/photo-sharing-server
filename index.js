@@ -1,19 +1,19 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const cookie = require("cookie-parser");
+const path = require("path");
+const fs = require('fs');
+
 const dbConnect = require("./db/dbConnect");
 const UserRouter = require("./routes/UserRouter");
 const PhotoRouter = require("./routes/PhotoRouter");
 const CommentRouter = require("./routes/CommentRouter");
 const authMiddleware = require("./middlewares/authMiddleware");
-const cookie = require("cookie-parser");
 const { login, logout } = require("./controllers/UserController");
+
 const Photo = require("./db/photoModel");
 const User = require("./db/userModel");
-
-const path = require("path");
-const fs = require('fs');
-
 
 dbConnect();
 
@@ -69,7 +69,9 @@ app.post("/commentsOfPhoto/:photo_id", async (req, res) => {
   });
   await photo.save();
 
-  return res.status(204).send();
+  return res.status(201).json({
+      message: "success"
+    });
 })
 
 app.post("/photos/new", async (req, res) => {
@@ -85,7 +87,7 @@ app.post("/photos/new", async (req, res) => {
     return res.status(400).json({ message: 'Invalid Format' });
   } 
   
-  const uploadDir = path.join('../frontend/public/images'); 
+  const uploadDir = path.join('../fe/public/images'); 
   const buffer = Buffer.from(matches[2], 'base64');
   const savePath = path.join(uploadDir, name);
 
