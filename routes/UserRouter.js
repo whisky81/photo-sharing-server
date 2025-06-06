@@ -7,4 +7,6 @@ router.get("/:userId", UserController.getUserById, async (req, res) => {
     return res.json(req.user); 
 }); 
 
+router.put("/", UserController.updateProfile); 
+
 module.exports = router;

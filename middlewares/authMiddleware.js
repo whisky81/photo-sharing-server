@@ -2,6 +2,8 @@ const jwt = require("../utils/jwt");
 const allowed = {
   GET: new Set(["/api/photo/list", "/"]),
   POST: new Set(["/admin/login", "/user"]),
+  PUT: new Set(),
+  DELETE: new Set()
 };
 
 const authMiddleware = async (req, res, next) => {

@@ -109,9 +109,22 @@ function logout(req, res) {
   res.status(200).send({ message: "Logged out successfully" });
 }
 
+async function updateProfile(req, res) {
+  // const { ... } = req.body; 
+
+  const user = await User.findById(req.currentUser._id); 
+
+
+  // user.first_name = ...
+
+  // const updatedUser = await user.save(); 
+  
+}
+
 module.exports = {
   getUserById,
   getAllUsers,
   login,
-  logout
+  logout,
+  updateProfile
 };

@@ -6,5 +6,6 @@ const UserController = require("../controllers/UserController");
 router.get("/list", PhotoController.allOfPhotos);
 router.get("/:photoId", PhotoController.getPhotoById);
 router.get("/user/:userId", UserController.getUserById, PhotoController.getPhotosByUserId); 
+router.delete("/:photoId", PhotoController.deletePhotoById);
 
 module.exports = router;

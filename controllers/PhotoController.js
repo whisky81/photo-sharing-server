@@ -90,8 +90,40 @@ async function getPhotosByUserId(req, res) {
   }
 }
 
+async function deletePhotoById(req, res) {
+  try {
+    const { photoId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(photoId)) {
+      return res.status(400).json({
+        message: `Invalid PhotoId ${photoId}`
+      });
+    }
+
+    const photo = await Photo.findById(photoId); 
+    if (req.currentUser._id.toString() !== photo.user_id.toString()) {
+      return res.status(400).json({
+        message: "You are not owner"
+      });
+    }
+
+    const deletedPhoto = await Photo.findByIdAndDelete(photoId); 
+
+    return res.status(200).json({
+      message: "Delete Successfully",
+      deletedPhoto
+    });
+
+  } catch (e) {
+    return res.status(500).json({
+      message: e?.message || "Delete Failed"
+    });
+  }
+}
+
 module.exports = {
   allOfPhotos,
   getPhotoById,
   getPhotosByUserId,
+  deletePhotoById
 };

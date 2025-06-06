@@ -36,6 +36,49 @@ async function getCommentsByUserId(req, res) {
   }
 }
 
+async function deleteCommentById(req, res) {
+  const { photoId, commentId } = req.body; 
+  const currentUserId = req.currentUser._id; 
+
+  if (!photoId || !commentId || !currentUserId) {
+    return res.status(400).json({
+      message: "Missing photoId, commentId, or user information."
+    });
+  }
+
+  try {
+    const updatedPhoto = await Photo.findOneAndUpdate(
+      {
+        _id: photoId,
+        "comments._id": commentId,
+        "comments.user": currentUserId 
+      },
+      {
+        $pull: {
+          comments: { _id: commentId } 
+        }
+      },
+      { new: true } 
+    );
+
+    if (!updatedPhoto) {
+      return res.status(403).json({ 
+        message: "Comment not found or you are not authorized to delete this comment."
+      });
+    }
+
+    return res.status(200).json({ 
+      updatedPhoto
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error?.message || "Server error while deleting comment.",
+    });
+  }
+}
+
 module.exports = {
   getCommentsByUserId,
+  deleteCommentById
 };
