@@ -73,7 +73,15 @@ async function getPhotosByUserId(req, res) {
     }
 
     const photos = await Photo.find({ user_id: userId })
-      .select("-__v -user_id")
+      .select("-__v")
+      .populate({
+        path: "user_id",
+        select: {
+          _id: true,
+          first_name: true,
+          last_name: true,
+        },
+      })
       .populate({
         path: "comments.user",
         select: { _id: true, first_name: true, last_name: true },
